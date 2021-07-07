@@ -1,68 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
 namespace addressbook_web_tests
 {
-    [TestFixture]
-    public class ContactCreationTests
+    public class ContactHelper : HelperBase
     {
-        private IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private string baseURL;
-        private bool acceptNextAlert = true;
+        public ContactHelper(ApplicationManager manager, string baseURl) : base(manager)
+        { }
 
-        [SetUp]
-        public void SetupTest()
+        public ContactHelper Create(ContactData contact)
         {
-            driver = new FirefoxDriver();
-            baseURL = "http://localhost/addressbook";
-            verificationErrors = new StringBuilder();
-        }
-
-        [TearDown]
-        public void TeardownTest()
-        {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
-            }
-            Assert.AreEqual("", verificationErrors.ToString());
-        }
-
-        [Test]
-        public void ContactCreationTest()
-        {
-            OpenHomePage();
-            Login(new AccountData("admin", "secret"));
             InitContactCreation();
-            ContactData contact = new ContactData("Test", "User");
             FillContactForm(contact);
             SubmitContactCreation();
-            ReturnToHomePage();
+            manager.Navigator.ReturnToHomePage();
+            return this;
         }
-
-        private void ReturnToHomePage()
+        public ContactHelper InitContactCreation()
         {
-            driver.FindElement(By.LinkText("Logout")).Click();
+            driver.FindElement(By.LinkText("add new")).Click();
+            return this;
         }
 
-        private void SubmitContactCreation()
-        {
-            driver.FindElement(By.Name("submit")).Click();
-            driver.FindElement(By.LinkText("home page")).Click();
-        }
-
-        private void FillContactForm(ContactData contact)
+        public ContactHelper FillContactForm(ContactData contact)
         {
             driver.FindElement(By.Name("firstname")).Click();
             driver.FindElement(By.Name("firstname")).Clear();
@@ -135,79 +101,17 @@ namespace addressbook_web_tests
             driver.FindElement(By.Name("notes")).Click();
             driver.FindElement(By.Name("notes")).Clear();
             driver.FindElement(By.Name("notes")).SendKeys(contact.Notes);
- 
+
             //driver.FindElement(By.XPath("//input[@type='file']")).SendKeys(contact.Photo);
             //driver.FindElement(By.Name("photo")).Click();
             //driver.FindElement(By.Name("photo")).Clear();
             //driver.FindElement(By.Name("photo")).SendKeys("");
+            return this;
         }
-
-        private void InitContactCreation()
+        public ContactHelper SubmitContactCreation()
         {
-            driver.FindElement(By.LinkText("add new")).Click();
-        }
-
-        private void Login(AccountData account)
-        {
-            driver.FindElement(By.Name("user")).Clear();
-            driver.FindElement(By.Name("user")).SendKeys(account.Username);
-            driver.FindElement(By.Name("pass")).Click();
-            driver.FindElement(By.Name("pass")).Clear();
-            driver.FindElement(By.Name("pass")).SendKeys(account.Password);
-            driver.FindElement(By.XPath("//input[@value='Login']")).Click();
-        }
-
-        private void OpenHomePage()
-        {
-            driver.Navigate().GoToUrl(baseURL);
-        }
-
-        private bool IsElementPresent(By by)
-        {
-            try
-            {
-                driver.FindElement(by);
-                return true;
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
-        }
-
-        private bool IsAlertPresent()
-        {
-            try
-            {
-                driver.SwitchTo().Alert();
-                return true;
-            }
-            catch (NoAlertPresentException)
-            {
-                return false;
-            }
-        }
-
-        private string CloseAlertAndGetItsText()
-        {
-            try
-            {
-                IAlert alert = driver.SwitchTo().Alert();
-                string alertText = alert.Text;
-                if (acceptNextAlert)
-                {
-                    alert.Accept();
-                }
-                else
-                {
-                    alert.Dismiss();
-                }
-                return alertText;
-            }
-            finally
-            {
-                acceptNextAlert = true;
-            }
+            driver.FindElement(By.Name("submit")).Click();
+            return this;
         }
     }
 }
