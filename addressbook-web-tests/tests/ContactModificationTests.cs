@@ -23,7 +23,13 @@ namespace addressbook_web_tests
         [Test]
         public void AddContactToGroupTest()
         {
-            app.Contact.AddToGroup(1, 1);
+            app.Contact.AddToGroup(1, 1, false);
+        }
+
+        [Test]
+        public void AddAllContactsToGroupTest()
+        {
+            app.Contact.AddToGroup(1, 1, true);
         }
     }
 }

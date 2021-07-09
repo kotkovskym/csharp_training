@@ -43,18 +43,18 @@ namespace addressbook_web_tests
             return this;
         }
 
-        public ContactHelper AddToGroup(int contact, int group)
+        public ContactHelper AddToGroup(int contact, int group, bool all)
         {
-            SelectContact(contact);
+            SelectContact(contact, all);
             SelectGroup(group);
             SubmitContactToGroupAddition();
             manager.Navigator.GoToGroupPage();
             return this;
         }
 
-        public ContactHelper RemoveContact(int contact)
+        public ContactHelper RemoveContact(int contact, bool all)
         {
-            SelectContact(contact);
+            SelectContact(contact, all);
             InitContactDeletion();
             SubmitContactDeletion();
             manager.Navigator.OpenHomePage();
@@ -170,10 +170,19 @@ namespace addressbook_web_tests
             return this;
         }
 
-        public ContactHelper SelectContact(int contact)
+        public ContactHelper SelectContact(int contact, bool all)
         {
-            IList<IWebElement> all = driver.FindElements(By.Name("selected[]"));
-            driver.FindElements(By.Name("selected[]")).ElementAt(contact - 1).Click();
+            if (all)
+            {
+                driver.FindElement(By.Id("MassCB")).Click();
+            }
+
+            else
+            {
+                IList<IWebElement> allElements = driver.FindElements(By.Name("selected[]"));
+                driver.FindElements(By.Name("selected[]")).ElementAt(contact - 1).Click();
+            }
+
             return this;
         }
         public ContactHelper SelectGroup(int group)
@@ -193,7 +202,7 @@ namespace addressbook_web_tests
 
         public ContactHelper InitContactDeletion()
         {
-            driver.FindElement(By.Name("Delete"));
+            driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
             return this;
         }
 
