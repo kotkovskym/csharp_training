@@ -14,21 +14,62 @@ namespace addressbook_web_tests
         public ContactHelper(ApplicationManager manager, string baseURl) : base(manager)
         { }
 
+        private string selectedGroupName;
+        public string SelectedGroupName
+        {
+            get
+            {
+                return selectedGroupName;
+            }
+
+        }
+
+        #region High level methods
         public ContactHelper Create(ContactData contact)
         {
             InitContactCreation();
-            FillContactForm(contact);
+            FillContactForm(contact, false);
             SubmitContactCreation();
             manager.Navigator.ReturnToHomePage();
             return this;
         }
+
+        public ContactHelper Modify(int index, ContactData newData)
+        {
+            InitContactModification(index + 1);
+            FillContactForm(newData, true);
+            SubmitContactModification();
+            manager.Navigator.ReturnToHomePage();
+            return this;
+        }
+
+        public ContactHelper AddToGroup(int contact, int group)
+        {
+            SelectContact(contact);
+            SelectGroup(group);
+            SubmitContactToGroupAddition();
+            manager.Navigator.GoToGroupPage();
+            return this;
+        }
+
+        public ContactHelper RemoveContact(int contact)
+        {
+            SelectContact(contact);
+            InitContactDeletion();
+            SubmitContactDeletion();
+            manager.Navigator.OpenHomePage();
+            return this;
+        }
+        #endregion
+
+        #region Low level methods
         public ContactHelper InitContactCreation()
         {
             driver.FindElement(By.LinkText("add new")).Click();
             return this;
         }
 
-        public ContactHelper FillContactForm(ContactData contact)
+        public ContactHelper FillContactForm(ContactData contact, bool IsContactModify)
         {
             driver.FindElement(By.Name("firstname")).Click();
             driver.FindElement(By.Name("firstname")).Clear();
@@ -89,9 +130,13 @@ namespace addressbook_web_tests
             driver.FindElement(By.Name("ayear")).Click();
             driver.FindElement(By.Name("ayear")).Clear();
             driver.FindElement(By.Name("ayear")).SendKeys(contact.AnniversaryYear);
-            driver.FindElement(By.Name("new_group")).Click();
-            new SelectElement(driver.FindElement(By.Name("new_group"))).SelectByText(contact.Group);
-            driver.FindElement(By.Name("new_group")).Click();
+            if (!IsContactModify)
+            {
+                driver.FindElement(By.Name("new_group")).Click();
+                new SelectElement(driver.FindElement(By.Name("new_group"))).SelectByText(contact.Group);
+                driver.FindElement(By.Name("new_group")).Click();
+            }
+
             driver.FindElement(By.Name("address2")).Click();
             driver.FindElement(By.Name("address2")).Clear();
             driver.FindElement(By.Name("address2")).SendKeys(contact.Address2);
@@ -113,5 +158,50 @@ namespace addressbook_web_tests
             driver.FindElement(By.Name("submit")).Click();
             return this;
         }
+
+        public ContactHelper InitContactModification(int ind)
+        {
+            driver.FindElement(By.XPath("//table[@id='maintable']/tbody/tr["+ ind +"]/td[8]/a/img")).Click();
+            return this;
+        }
+        public ContactHelper SubmitContactModification()
+        {
+            driver.FindElement(By.Name("update")).Click();
+            return this;
+        }
+
+        public ContactHelper SelectContact(int contact)
+        {
+            IList<IWebElement> all = driver.FindElements(By.Name("selected[]"));
+            driver.FindElements(By.Name("selected[]")).ElementAt(contact - 1).Click();
+            return this;
+        }
+        public ContactHelper SelectGroup(int group)
+        {
+            driver.FindElement(By.Name("to_group")).Click();
+            new SelectElement(driver.FindElement(By.Name("to_group"))).SelectByIndex(group);
+            driver.FindElement(By.XPath("//div[@id='content']/form[2]/div[4]/select/option[" + group + "]")).Click();
+            selectedGroupName = driver.FindElement(By.XPath("//div[@id='content']/form[2]/div[4]/select/option["+group+"]")).Text;
+            return this;
+        }
+
+        public ContactHelper SubmitContactToGroupAddition()
+        {
+            driver.FindElement(By.Name("add")).Click();
+            return this;
+        }
+
+        public ContactHelper InitContactDeletion()
+        {
+            driver.FindElement(By.Name("Delete"));
+            return this;
+        }
+
+        public ContactHelper SubmitContactDeletion()
+        {
+            driver.SwitchTo().Alert().Accept();
+            return this;
+        }
+        #endregion
     }
 }

@@ -30,5 +30,10 @@ namespace addressbook_web_tests
         {
             driver.FindElement(By.LinkText("home page")).Click();
         }
+
+        public void GoToGroupPage()
+        {
+            driver.FindElement(By.LinkText("group page \""+manager.Contact.SelectedGroupName+"\"")).Click();
+        }
     }
 }

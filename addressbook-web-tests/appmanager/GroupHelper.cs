@@ -17,6 +17,7 @@ namespace addressbook_web_tests
             
         }
 
+        #region High level methods
         public GroupHelper Create(GroupData group)
         {
             manager.Navigator.GoToGroupsPage();
@@ -27,32 +28,30 @@ namespace addressbook_web_tests
             ReturnToGroupsPage();
             return this;
         }
+        public GroupHelper Modify(int p, GroupData newData)
+        {
+            manager.Navigator.GoToGroupsPage();
+
+            SelectGroup(p);
+            InitGroupModification();
+            FillGroupForm(newData);
+            SubmitGroupModification();
+            ReturnToGroupsPage();
+            return this;
+        }
 
         public GroupHelper Remove(int p)
         {
             manager.Navigator.GoToGroupsPage();
 
-            SelectGroup(1);
+            SelectGroup(p);
             RemoveGroup();
             ReturnToGroupsPage();
             return this;
         }
-        public GroupHelper SelectGroup(int index)
-        {
-            driver.FindElement(By.XPath("//div[@id='content']/form/span[" + index + "]/input")).Click();
-            return this;
-        }
+        #endregion
 
-        public GroupHelper ReturnToGroupsPage()
-        {
-            driver.FindElement(By.LinkText("group page")).Click();
-            return this;
-        }
-        public GroupHelper RemoveGroup()
-        {
-            driver.FindElement(By.XPath("//div[@id='content']/form/input[5]")).Click();
-            return this;
-        }
+        #region Low level methods
         public GroupHelper InitGroupCreation()
         {
             driver.FindElement(By.Name("new")).Click();
@@ -76,6 +75,37 @@ namespace addressbook_web_tests
             driver.FindElement(By.Name("submit")).Click();
             return this;
         }
+
+        public GroupHelper InitGroupModification()
+        {
+            driver.FindElement(By.Name("edit")).Click();
+            return this;
+        }
+
+        public GroupHelper SelectGroup(int index)
+        {
+            driver.FindElement(By.XPath("//div[@id='content']/form/span[" + index + "]/input")).Click();
+            return this;
+        }
+
+        public GroupHelper SubmitGroupModification()
+        {
+            driver.FindElement(By.Name("update")).Click();
+            return this;
+        }
+
+        public GroupHelper ReturnToGroupsPage()
+        {
+            driver.FindElement(By.LinkText("group page")).Click();
+            return this;
+        }
+        public GroupHelper RemoveGroup()
+        {
+            driver.FindElement(By.XPath("//div[@id='content']/form/input[5]")).Click();
+            return this;
+        }
+        #endregion
+
 
     }
 }
