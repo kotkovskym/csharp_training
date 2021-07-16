@@ -11,8 +11,12 @@ namespace addressbook_web_tests
 {
     public class ContactHelper : HelperBase
     {
-        public ContactHelper(ApplicationManager manager, string baseURl) : base(manager)
-        { }
+        private string baseURL;
+        public ContactHelper(ApplicationManager manager, string baseURL) : base(manager)
+        {
+            this.baseURL = baseURL;
+        }
+
 
         private string selectedGroupName;
         public string SelectedGroupName
@@ -27,6 +31,8 @@ namespace addressbook_web_tests
         #region High level methods
         public ContactHelper Create(ContactData contact)
         {
+            manager.Navigator.OpenHomePage();
+
             InitContactCreation();
             FillContactForm(contact, false);
             SubmitContactCreation();
@@ -36,6 +42,10 @@ namespace addressbook_web_tests
 
         public ContactHelper Modify(int index, ContactData newData)
         {
+            manager.Navigator.OpenHomePage();
+
+            IsEmptyCheck();
+
             InitContactModification(index + 1);
             FillContactForm(newData, true);
             SubmitContactModification();
@@ -45,6 +55,10 @@ namespace addressbook_web_tests
 
         public ContactHelper AddToGroup(int contact, int group, bool all)
         {
+            manager.Navigator.OpenHomePage();
+
+            IsEmptyCheck();
+
             SelectContact(contact, all);
             SelectGroup(group);
             SubmitContactToGroupAddition();
@@ -54,10 +68,27 @@ namespace addressbook_web_tests
 
         public ContactHelper RemoveContact(int contact, bool all)
         {
+            manager.Navigator.OpenHomePage();
+
+            IsEmptyCheck();
+
             SelectContact(contact, all);
             InitContactDeletion();
             SubmitContactDeletion();
             manager.Navigator.OpenHomePage();
+            return this;
+        }
+
+        public ContactHelper IsEmptyCheck()
+        {
+            if ((!IsElementPresent(By.Name("selected[]")) && driver.Url == baseURL + "/"))
+            {
+                //It seems that it is better for the secondary contact data to be here, since the contact data transmitted
+                //from the tests may be deliberately invalid for negative checks.
+
+                ContactData fortest = new ContactData("test", "user");
+                Create(fortest);
+            }
             return this;
         }
         #endregion

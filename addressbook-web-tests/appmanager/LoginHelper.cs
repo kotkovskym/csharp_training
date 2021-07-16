@@ -25,8 +25,7 @@ namespace addressbook_web_tests
                 }
                 Logout();
             }
-            //var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            //wait.Until(d => d.FindElements(By.Name("user")).Count > 0);
+
             Type(By.Name("user"), account.Username);
             Type(By.Name("pass"), account.Password);
             driver.FindElement(By.XPath("//input[@value='Login']")).Click();

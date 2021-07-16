@@ -29,7 +29,7 @@ namespace addressbook_web_tests
 
             loginHelper = new LoginHelper(this);
             navigationHelper = new NavigationHelper(this, baseURL);
-            groupHelper = new GroupHelper(this);
+            groupHelper = new GroupHelper(this, baseURL);
             contactHelper = new ContactHelper(this, baseURL);
         }
 

@@ -11,10 +11,11 @@ namespace addressbook_web_tests
 {
     public class GroupHelper : HelperBase
     {
+        private string baseURL;
 
-        public GroupHelper(ApplicationManager manager) : base(manager)
+        public GroupHelper(ApplicationManager manager, string baseURL) : base(manager)
         {
-            
+            this.baseURL = baseURL;
         }
 
         #region High level methods
@@ -28,9 +29,12 @@ namespace addressbook_web_tests
             ReturnToGroupsPage();
             return this;
         }
+
         public GroupHelper Modify(int p, GroupData newData)
         {
             manager.Navigator.GoToGroupsPage();
+
+            IsEmptyCheck();
 
             SelectGroup(p);
             InitGroupModification();
@@ -44,11 +48,30 @@ namespace addressbook_web_tests
         {
             manager.Navigator.GoToGroupsPage();
 
+            IsEmptyCheck();
+
             SelectGroup(p);
             RemoveGroup();
             ReturnToGroupsPage();
             return this;
         }
+
+        public GroupHelper IsEmptyCheck()
+        {
+            if ((!IsElementPresent(By.Name("selected[]")) && driver.Url == baseURL + "/group.php"))
+            {
+                //It seems that it is better for the secondary group data to be here, since the group data transmitted
+                //from the tests may be deliberately invalid for negative checks.
+
+                GroupData fortest = new GroupData("zzz");
+                fortest.Header = "eee";
+                fortest.Footer = "www";
+                Create(fortest);
+            }
+            return this;
+        }
+
+
         #endregion
 
         #region Low level methods
