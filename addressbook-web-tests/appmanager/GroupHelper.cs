@@ -34,8 +34,6 @@ namespace addressbook_web_tests
         {
             manager.Navigator.GoToGroupsPage();
 
-            IsEmptyCheck();
-
             SelectGroup(p);
             InitGroupModification();
             FillGroupForm(newData);
@@ -48,7 +46,6 @@ namespace addressbook_web_tests
         {
             manager.Navigator.GoToGroupsPage();
 
-            IsEmptyCheck();
 
             SelectGroup(p);
             RemoveGroup();
@@ -58,6 +55,8 @@ namespace addressbook_web_tests
 
         public GroupHelper IsEmptyCheck()
         {
+            manager.Navigator.GoToGroupsPage();
+
             if ((!IsElementPresent(By.Name("selected[]")) && driver.Url == baseURL + "/group.php"))
             {
                 //It seems that it is better for the secondary group data to be here, since the group data transmitted

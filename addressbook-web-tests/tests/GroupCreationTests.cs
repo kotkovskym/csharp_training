@@ -28,6 +28,7 @@ namespace addressbook_web_tests
             group.Footer = "";
             
             app.Groups.Create(group);
+
         }
 
     }

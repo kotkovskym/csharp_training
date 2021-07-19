@@ -17,18 +17,21 @@ namespace addressbook_web_tests
             newData.BirthDay = "-";
             newData.AnniversaryDay = "-";
 
+            app.Contact.IsEmptyCheck();
             app.Contact.Modify(1, newData);
         }
 
         [Test]
         public void AddContactToGroupTest()
         {
+            app.Contact.IsEmptyCheck();
             app.Contact.AddToGroup(1, 1, false);
         }
 
         [Test]
         public void AddAllContactsToGroupTest()
         {
+            app.Contact.IsEmptyCheck();
             app.Contact.AddToGroup(1, 1, true);
         }
     }

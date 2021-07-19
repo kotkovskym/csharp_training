@@ -44,8 +44,6 @@ namespace addressbook_web_tests
         {
             manager.Navigator.OpenHomePage();
 
-            IsEmptyCheck();
-
             InitContactModification(index + 1);
             FillContactForm(newData, true);
             SubmitContactModification();
@@ -56,8 +54,6 @@ namespace addressbook_web_tests
         public ContactHelper AddToGroup(int contact, int group, bool all)
         {
             manager.Navigator.OpenHomePage();
-
-            IsEmptyCheck();
 
             SelectContact(contact, all);
             SelectGroup(group);
@@ -70,8 +66,6 @@ namespace addressbook_web_tests
         {
             manager.Navigator.OpenHomePage();
 
-            IsEmptyCheck();
-
             SelectContact(contact, all);
             InitContactDeletion();
             SubmitContactDeletion();
@@ -81,6 +75,8 @@ namespace addressbook_web_tests
 
         public ContactHelper IsEmptyCheck()
         {
+            manager.Navigator.OpenHomePage();
+
             if ((!IsElementPresent(By.Name("selected[]")) && driver.Url == baseURL + "/"))
             {
                 //It seems that it is better for the secondary contact data to be here, since the contact data transmitted

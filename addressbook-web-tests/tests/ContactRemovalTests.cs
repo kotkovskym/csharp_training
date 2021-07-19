@@ -13,12 +13,14 @@ namespace addressbook_web_tests
         [Test]
         public void ContactRemovalTest()
         {
+            app.Contact.IsEmptyCheck();
             app.Contact.RemoveContact(1, false);
         }
 
         [Test]
         public void AllContactsRemovalTest()
         {
+            app.Contact.IsEmptyCheck();
             app.Contact.RemoveContact(1, true);
         }
     }
