@@ -13,8 +13,14 @@ namespace addressbook_web_tests
         [Test]
         public void ContactRemovalTest()
         {
+            List<ContactData> oldContacts = app.Contact.GetContactList();
+
             app.Contact.IsEmptyCheck();
             app.Contact.RemoveContact(1, false);
+
+            List<ContactData> newContacts = app.Contact.GetContactList();
+            oldContacts.RemoveAt(0);
+            Assert.AreEqual(oldContacts, newContacts);
         }
 
         [Test]
@@ -22,6 +28,9 @@ namespace addressbook_web_tests
         {
             app.Contact.IsEmptyCheck();
             app.Contact.RemoveContact(1, true);
+            List<ContactData> newContacts = app.Contact.GetContactList();
+
+            Assert.IsTrue(newContacts.Count == 0);
         }
     }
 }

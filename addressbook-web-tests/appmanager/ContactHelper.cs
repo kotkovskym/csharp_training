@@ -17,6 +17,37 @@ namespace addressbook_web_tests
             this.baseURL = baseURL;
         }
 
+        public List<ContactData> GetContactList()
+        {
+            manager.Navigator.OpenHomePage();
+
+            List<ContactData> contacts = new List<ContactData>();
+
+            List<string> first = new List<string>();
+            List<string> last = new List<string>();
+            int j = driver.FindElements(By.Name("entry")).Count();
+            for (int i = 2; i <= j + 1; i++)
+            {
+                ICollection<IWebElement> firstNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[3]"));
+                foreach (IWebElement names in firstNames)
+                {
+                    first.Add((names.Text));
+                }
+                
+                ICollection<IWebElement> lastNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[2]"));
+                foreach (IWebElement names in lastNames)
+                {
+                    last.Add((names.Text));
+                }
+            }
+
+            for (int i = 0; i < first.Count(); i++)
+            {
+                contacts.Add(new ContactData(first[i], last[i]));
+            }
+
+            return contacts;
+        }
 
         private string selectedGroupName;
         public string SelectedGroupName
