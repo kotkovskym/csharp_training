@@ -19,8 +19,12 @@ namespace addressbook_web_tests
             newData.BirthDay = "-";
             newData.AnniversaryDay = "-";
 
+            ContactData oldData = oldContacts[0];
+
             app.Contact.IsEmptyCheck();
             app.Contact.Modify(1, newData);
+
+            Assert.AreEqual(oldContacts.Count, app.Contact.GetContactCount());
 
             List<ContactData> newContacts = app.Contact.GetContactList();
             oldContacts[0].FirstName = newData.FirstName;
@@ -28,6 +32,15 @@ namespace addressbook_web_tests
             oldContacts.Sort();
             newContacts.Sort();
             Assert.AreEqual(oldContacts, newContacts);
+
+            foreach (ContactData contact in newContacts)
+            {
+                if (contact.Id == oldData.Id)
+                {
+                    Assert.AreEqual(newData.FirstName, contact.FirstName);
+                    Assert.AreEqual(newData.LastName, contact.LastName);
+                }
+            }
         }
 
         [Test]

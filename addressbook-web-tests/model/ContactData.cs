@@ -8,8 +8,6 @@ namespace addressbook_web_tests
 {
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
-        private string firstname;
-        private string lastname;
         private string middlename = "";
         private string nickname = "";
         private string title = "";
@@ -37,8 +35,8 @@ namespace addressbook_web_tests
 
         public ContactData(string firstname, string lastname)
         {
-            this.firstname = firstname;
-            this.lastname = lastname;
+            FirstName = firstname;
+            LastName = lastname;
         }
 
         public bool Equals(ContactData other)
@@ -75,18 +73,11 @@ namespace addressbook_web_tests
             //var tuple = new Tuple <int, int> (FirstName.CompareTo(other.FirstName), LastName.CompareTo(other.LastName))
             return FirstName.CompareTo(other.FirstName) & LastName.CompareTo(other.LastName);
         }
-        public string FirstName
-        {
-            get { return firstname; }
-            set { firstname = value; }
-        }
+        public string FirstName { get; set; }
 
-        public string LastName
-        {
-            get { return lastname; }
-            set { lastname = value; }
-        }
+        public string LastName { get; set; }
 
+        public string Id { get; set; }
         public string MiddleName
         {
             get { return middlename; }

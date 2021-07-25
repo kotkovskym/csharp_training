@@ -17,36 +17,48 @@ namespace addressbook_web_tests
             this.baseURL = baseURL;
         }
 
+        private List<ContactData> contactCache = null;
         public List<ContactData> GetContactList()
         {
-            manager.Navigator.OpenHomePage();
-
-            List<ContactData> contacts = new List<ContactData>();
-
-            List<string> first = new List<string>();
-            List<string> last = new List<string>();
-            int j = driver.FindElements(By.Name("entry")).Count();
-            for (int i = 2; i <= j + 1; i++)
+            if (contactCache == null)
             {
-                ICollection<IWebElement> firstNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[3]"));
-                foreach (IWebElement names in firstNames)
-                {
-                    first.Add((names.Text));
-                }
-                
-                ICollection<IWebElement> lastNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[2]"));
-                foreach (IWebElement names in lastNames)
-                {
-                    last.Add((names.Text));
-                }
-            }
+                contactCache = new List<ContactData>();
 
-            for (int i = 0; i < first.Count(); i++)
-            {
-                contacts.Add(new ContactData(first[i], last[i]));
-            }
+                manager.Navigator.OpenHomePage();
 
-            return contacts;
+                List<string> first = new List<string>();
+                List<string> last = new List<string>();
+                int j = driver.FindElements(By.Name("entry")).Count();
+                for (int i = 2; i <= j + 1; i++)
+                {
+                    ICollection<IWebElement> firstNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[3]"));
+                    foreach (IWebElement names in firstNames)
+                    {
+                        first.Add((names.Text));
+                    }
+
+                    ICollection<IWebElement> lastNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[2]"));
+                    foreach (IWebElement names in lastNames)
+                    {
+                        last.Add((names.Text));
+                    }
+                }
+
+                for (int i = 0; i < first.Count(); i++)
+                {
+                    contactCache.Add(new ContactData(first[i], last[i]) {
+                        Id = driver.FindElement(By.Name("selected[]")).GetAttribute("value")
+                    });
+                }
+
+            }
+            
+            return new List<ContactData>(contactCache);
+        }
+
+        public int GetContactCount()
+        {
+            return driver.FindElements(By.Name("selected[]")).Count;
         }
 
         private string selectedGroupName;
@@ -214,6 +226,7 @@ namespace addressbook_web_tests
         public ContactHelper SubmitContactCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            contactCache = null;
             return this;
         }
 
@@ -225,6 +238,7 @@ namespace addressbook_web_tests
         public ContactHelper SubmitContactModification()
         {
             driver.FindElement(By.Name("update")).Click();
+            contactCache = null;
             return this;
         }
 
@@ -267,6 +281,7 @@ namespace addressbook_web_tests
         public ContactHelper SubmitContactDeletion()
         {
             driver.SwitchTo().Alert().Accept();
+            contactCache = null;
             return this;
         }
         #endregion
