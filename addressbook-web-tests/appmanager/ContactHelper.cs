@@ -29,19 +29,12 @@ namespace addressbook_web_tests
                 List<string> first = new List<string>();
                 List<string> last = new List<string>();
                 int j = driver.FindElements(By.Name("entry")).Count();
-                for (int i = 2; i <= j + 1; i++)
+                List<IWebElement> elements = driver.FindElements(By.Name("entry")).ToList();
+                foreach(IWebElement element in elements)
                 {
-                    ICollection<IWebElement> firstNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[3]"));
-                    foreach (IWebElement names in firstNames)
-                    {
-                        first.Add((names.Text));
-                    }
-
-                    ICollection<IWebElement> lastNames = driver.FindElements(By.XPath("//table[@id='maintable']/tbody/tr[" + i + "]/td[2]"));
-                    foreach (IWebElement names in lastNames)
-                    {
-                        last.Add((names.Text));
-                    }
+                    List<IWebElement>  names = element.FindElements(By.TagName("td")).ToList();
+                    first.Add((names[2].Text));
+                    last.Add((names[1].Text));
                 }
 
                 for (int i = 0; i < first.Count(); i++)

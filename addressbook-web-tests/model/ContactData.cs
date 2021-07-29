@@ -70,8 +70,13 @@ namespace addressbook_web_tests
             {
                 return 1;
             }
-            //var tuple = new Tuple <int, int> (FirstName.CompareTo(other.FirstName), LastName.CompareTo(other.LastName))
-            return FirstName.CompareTo(other.FirstName) & LastName.CompareTo(other.LastName);
+            
+            if (LastName.CompareTo(other.LastName) == 0)
+            {
+                return FirstName.CompareTo(other.FirstName);
+            }
+
+            return LastName.CompareTo(other.LastName);
         }
         public string FirstName { get; set; }
 
