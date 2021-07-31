@@ -39,7 +39,7 @@ namespace addressbook_web_tests
         {
             manager.Navigator.OpenHomePage();
             InitContactModification(0);
-            string firstName = driver.FindElement(By.Name("firsname")).GetAttribute("value");
+            string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
             string address = driver.FindElement(By.Name("address")).GetAttribute("value");
             string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
@@ -271,7 +271,9 @@ namespace addressbook_web_tests
 
         public ContactHelper InitContactModification(int ind)
         {
-            driver.FindElement(By.XPath("//table[@id='maintable']/tbody/tr["+ ind +"]/td[8]/a/img")).Click();
+            driver.FindElements(By.Name("entry"))[ind]
+                .FindElements(By.TagName("td"))[7]
+                .FindElement(By.TagName("a")).Click();
             return this;
         }
         public ContactHelper SubmitContactModification()
