@@ -44,5 +44,12 @@ namespace addressbook_web_tests
         {
             driver.FindElement(By.LinkText("group page \""+manager.Contact.SelectedGroupName+"\"")).Click();
         }
+
+        public void GoToContactDetailsPage(int index)
+        {
+            driver.FindElements(By.Name("entry"))[index]
+                .FindElements(By.TagName("td"))[6]
+                .FindElement(By.TagName("a")).Click();
+        }
     }
 }

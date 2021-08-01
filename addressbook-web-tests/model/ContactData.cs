@@ -34,6 +34,8 @@ namespace addressbook_web_tests
         private string notes = "";
         private string photo = "";*/
         private string allPhones;
+        private string allData;
+        private string initials;
 
         public ContactData(string firstname, string lastname)
         {
@@ -150,6 +152,39 @@ namespace addressbook_web_tests
             set { allPhones = value; }
         }
 
+        public string AllData
+        {
+            get
+            {
+                if (allData != null)
+                {
+                    return allData;
+                }
+                else
+                {
+                    return (ForSpaces(FirstName) + ForSpaces(MiddleName) + CleanUp(LastName) + CleanUp(Nickname) + CleanUp(Title) + CleanUp(Company) + CleanUp(Address) +
+                        CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone) +  CleanUp(Fax) + CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3) + CleanUp(HomePage) + (BirthDay) + ". " + ForSpaces(BirthMonth) + ForSpaces(BirthYear) + "(" + (2021 - Convert.ToInt32(BirthYear)) + ")" + "\r\n" +(AnniversaryDay) + ". " + ForSpaces(AnniversaryMonth) + ForSpaces(AnniversaryYear) + "(" + (2021 - Convert.ToInt32(AnniversaryYear)) + ")" + "\r\n" + CleanUp(Address2) + CleanUp(HomeTelephone2) + CleanUp(Notes)).Trim();
+                }
+            }
+            set { allData = value; }
+        }
+
+        public string Initials
+        {
+            get
+            {
+                if (initials != null)
+                {
+                    return initials;
+                }
+                else
+                {
+                    return ((FirstName) + (LastName)).Trim();
+                }
+            }
+            set { initials = value; }
+        }
+
         private string CleanUp(string phone)
         {
             if (phone == null || phone == "")
@@ -157,6 +192,15 @@ namespace addressbook_web_tests
                 return "";
             }
             return Regex.Replace(phone, "[ -()]", "") + "\r\n";
+        }
+
+        private string ForSpaces(string initials)
+        {
+            if (initials == null || initials == "")
+            {
+                return "";
+            }
+            return initials + " ";
         }
     }
 }

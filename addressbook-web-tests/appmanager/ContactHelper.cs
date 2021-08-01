@@ -35,23 +35,100 @@ namespace addressbook_web_tests
 
         }
 
+        public ContactData GetContactInformationFromContactDetails(int index)
+        {
+            manager.Navigator.OpenHomePage();
+            manager.Navigator.GoToContactDetailsPage(0);
+            string allData = driver.FindElement(By.Id("content")).GetAttribute("innerText").Replace("\r\n\r\n", "\r\n").Replace("H: ", "").Replace("M: ", "").Replace("W: ", "").Replace("F: ", "").Replace("Birthday ", "").Replace("Anniversary ", "").Replace("Homepage:\r\n", "").Replace("P: ", "").Trim();
+
+            //IList<IWebElement> data = driver.FindElement(By.Id("content")).FindElements(By.TagName("br"));
+
+            //foreach (IWebElement element in data)
+            //{
+            //allData = allData + element.GetAttribute("textContent");
+            //}
+
+            string firstName = null;
+            string lastName = null;
+            string creds = driver.FindElement(By.Id("content")).FindElement(By.TagName("b")).Text;
+            string[] fullName = creds.Split(' ');
+            if (fullName.Length == 3)
+            {
+                firstName = fullName[0];
+                lastName = fullName[2];
+            }
+            if (fullName.Length == 2)
+            {
+                firstName = fullName[0];
+                lastName = fullName[1];
+            }
+            else
+            {
+                firstName = fullName[0];
+            }
+
+            return new ContactData(firstName, lastName)
+            {
+                AllData = allData,
+                Initials = firstName + lastName
+            };
+        }
+
+        
+
         public ContactData GetContactInformationFromEditForm(int index)
         {
             manager.Navigator.OpenHomePage();
             InitContactModification(0);
             string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
+            string middleName = driver.FindElement(By.Name("middlename")).GetAttribute("value");
             string address = driver.FindElement(By.Name("address")).GetAttribute("value");
             string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
             string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
             string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
+            string nick = driver.FindElement(By.Name("nickname")).GetAttribute("value");
+            string company = driver.FindElement(By.Name("company")).GetAttribute("value");
+            string title = driver.FindElement(By.Name("title")).GetAttribute("value");
+            string fax = driver.FindElement(By.Name("fax")).GetAttribute("value");
+            string email = driver.FindElement(By.Name("email")).GetAttribute("value");
+            string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
+            string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
+            string bday = driver.FindElement(By.Name("bday")).GetAttribute("value");
+            string bmonth = driver.FindElement(By.Name("bmonth")).GetAttribute("value");
+            string byear = driver.FindElement(By.Name("byear")).GetAttribute("value");
+            string aday = driver.FindElement(By.Name("aday")).GetAttribute("value");
+            string amonth = driver.FindElement(By.Name("amonth")).GetAttribute("value");
+            string ayear = driver.FindElement(By.Name("ayear")).GetAttribute("value");
+            string address2 = driver.FindElement(By.Name("address2")).GetAttribute("value");
+            string homePhone2 = driver.FindElement(By.Name("phone2")).GetAttribute("value");
+            string notes = driver.FindElement(By.Name("notes")).GetAttribute("value");
+            string homePage = driver.FindElement(By.Name("homepage")).GetAttribute("value");
 
             return new ContactData(firstName, lastName)
             {
+                MiddleName = middleName,
                 Address = address,
                 HomeTelephone = homePhone,
                 Mobile = mobilePhone,
-                WorkTelephone = workPhone
+                WorkTelephone = workPhone,
+                Nickname = nick,
+                Company = company,
+                Title = title,
+                Fax = fax,
+                Email = email,
+                Email2 = email2,
+                Email3 = email3,
+                BirthDay = bday,
+                BirthMonth = bmonth,
+                BirthYear = byear,
+                AnniversaryDay = aday,
+                AnniversaryMonth = amonth,
+                AnniversaryYear = ayear,
+                Address2 = address2,
+                HomeTelephone2 = homePhone2,
+                Notes = notes,
+                HomePage = homePage
             };
         }
 
