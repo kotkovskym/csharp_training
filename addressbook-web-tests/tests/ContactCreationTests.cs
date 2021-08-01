@@ -10,6 +10,23 @@ namespace addressbook_web_tests
     [TestFixture]
     public class ContactCreationTests : AuthTestBase
     {
+        public static IEnumerable<ContactData> RandomGroupDataProvider()
+        {
+            List<ContactData> contacts = new List<ContactData>();
+            for (int i = 0; i < 5; i++)
+            {
+                contacts.Add(new ContactData(GenrateRandomString(30), GenrateRandomString(30))
+                {
+                    MiddleName = (GenrateRandomString(30)),
+                    Address = (GenrateRandomString(50)),
+                    Company = (GenrateRandomString(70)),
+                    Notes = (GenrateRandomString(300))
+
+                });
+            }
+            return contacts;
+        }
+
         [Test]
         public void ContactCreationTest()
         {
