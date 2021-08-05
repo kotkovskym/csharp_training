@@ -43,6 +43,10 @@ namespace addressbook_web_tests
             LastName = lastname;
         }
 
+        public ContactData()
+        {
+        }
+
         public bool Equals(ContactData other)
         {
             if (Object.ReferenceEquals(other, null))
