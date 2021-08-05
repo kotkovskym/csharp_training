@@ -39,7 +39,7 @@ namespace addressbook_test_data_generators
                 }
                 else
                 {
-                    StreamWriter writer = new StreamWriter(args[1]);
+                    StreamWriter writer = new StreamWriter(args[2]);
                     if (format == "csv")
                     {
                         WriteGroupsToCsvFile(groups, writer);
@@ -69,7 +69,27 @@ namespace addressbook_test_data_generators
                         Mobile = TestBase.GenrateRandomString(12),
                         HomeTelephone = TestBase.GenrateRandomString(12),
                         Company = TestBase.GenrateRandomString(30),
-                        Address = TestBase.GenrateRandomString(30)
+                        Address = TestBase.GenrateRandomString(30),
+                        MiddleName = "",
+                        Email = "",
+                        Email2 = "",
+                        Email3 = "",
+                        Title = "",
+                        Nickname = "",
+                        WorkTelephone = "",
+                        Address2 = "",
+                        HomeTelephone2 = "",
+                        HomePage = "",
+                        Notes = TestBase.GenrateRandomString(100),
+                        Fax ="",
+                        BirthDay = "",
+                        BirthMonth = "-",
+                        BirthYear = "",
+                        AnniversaryDay = "",
+                        AnniversaryMonth = "-",
+                        AnniversaryYear = "",
+                        Group = "[none]",
+                        AllData = ""
                     });
                 }
 
@@ -79,7 +99,7 @@ namespace addressbook_test_data_generators
                 }
                 else
                 {
-                    StreamWriter writer = new StreamWriter(args[1]);
+                    StreamWriter writer = new StreamWriter(args[2]);
                     if (format == "csv")
                     {
                         WriteContactsToCsvFile(contacts, writer);

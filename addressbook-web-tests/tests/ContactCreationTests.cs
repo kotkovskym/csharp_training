@@ -93,11 +93,10 @@ namespace addressbook_web_tests
         }
 
         [Test, TestCaseSource("ContactDataFromJsonFile")]
-        public void ContactCreationTest()
+        public void ContactCreationTest(ContactData contact)
         {
             List<ContactData> oldContacts = app.Contact.GetContactList();
 
-            ContactData contact = new ContactData("Test", "User");
             app.Contact.Create(contact);
 
             Assert.AreEqual(oldContacts.Count + 1, app.Contact.GetContactCount());
