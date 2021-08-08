@@ -34,6 +34,7 @@ namespace addressbook_web_tests
         private string notes = "";
         private string photo = "";*/
         private string allPhones;
+        private string allEmails;
         private string allData;
         private string initials;
 
@@ -150,10 +151,26 @@ namespace addressbook_web_tests
                 }
                 else
                 {
-                    return (CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone)).Trim();
+                    return (CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone) + CleanUp(HomeTelephone2)).Trim();
                 }
             }
             set { allPhones = value; }
+        }
+
+        public string AllEmails
+        {
+            get
+            {
+                if (allEmails != null)
+                {
+                    return allEmails;
+                }
+                else
+                {
+                    return (CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)).Trim();
+                }
+            }
+            set { allEmails = value; }
         }
 
         public string AllData
