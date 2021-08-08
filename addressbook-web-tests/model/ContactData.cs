@@ -183,8 +183,7 @@ namespace addressbook_web_tests
                 }
                 else
                 {
-                    return (ForSpaces(FirstName) + ForSpaces(MiddleName) + CleanUp(LastName) + CleanUp(Nickname) + CleanUp(Title) + CleanUp(Company) + CleanUp(Address) +
-                        CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone) +  CleanUp(Fax) + CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3) + CleanUp(HomePage) + (BirthDay) + ". " + ForSpaces(BirthMonth) + ForSpaces(BirthYear) + "(" + (2021 - Convert.ToInt32(BirthYear)) + ")" + "\r\n" +(AnniversaryDay) + ". " + ForSpaces(AnniversaryMonth) + ForSpaces(AnniversaryYear) + "(" + (2021 - Convert.ToInt32(AnniversaryYear)) + ")" + "\r\n" + CleanUp(Address2) + CleanUp(HomeTelephone2) + CleanUp(Notes)).Trim();
+                    return ForSpaces(FirstName) + ForSpaces(MiddleName) + CleanUp(LastName) + CleanUp(Nickname) + Block(CleanUp(Title) + CleanUp(Company) + CleanUp(Address)) + Block(PreparePhone(CleanUpPhone(HomeTelephone)) + PreparePhone(CleanUpPhone(Mobile)) + PreparePhone(CleanUpPhone(WorkTelephone)) + PreparePhone(CleanUpPhone(Fax))) + Block(CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)) + CleanUp(HomePage) + Block(PrepareDay(BirthDay) + ForSpaces(BirthMonth) + PrepareYear(BirthYear) + PrepareDay(AnniversaryDay) + ForSpaces(AnniversaryMonth) + PrepareYear(AnniversaryYear)) + Block(CleanUp(Address2)) + Block(PreparePhone(CleanUpPhone(HomeTelephone2))) + CleanUp(Notes);
                 }
             }
             set { allData = value; }
@@ -206,7 +205,7 @@ namespace addressbook_web_tests
             set { initials = value; }
         }
 
-        private string CleanUp(string phone)
+        private string CleanUpPhone(string phone)
         {
             if (phone == null || phone == "")
             {
@@ -214,6 +213,85 @@ namespace addressbook_web_tests
             }
             return Regex.Replace(phone, "[ -()]", "") + "\r\n";
         }
+
+        private string PreparePhone(string phone)
+        {
+            if (phone == CleanUpPhone(Mobile))
+            {
+                return "M: " + phone;
+            }
+            else if(phone == CleanUpPhone(HomeTelephone))
+            {
+                return "H: " + phone;
+            }
+            else if(phone == CleanUpPhone(Fax))
+            {
+                return "F: " + phone;
+            }
+             else if (phone == CleanUpPhone(WorkTelephone))
+            {
+                return "W: " + phone;
+            }
+            else if (phone == CleanUpPhone(HomeTelephone2))
+            {
+                return "P: " + phone;
+            }
+            return "";
+            
+        }
+
+        private string CleanUp(string data)
+        {
+            if (data == null || data == "")
+            {
+                return "";
+            }
+            if (data == HomePage)
+            {
+                return "Homepage:" + "\r\n" + data + "\r\n\r\n";
+            }
+            if (data == Notes)
+            {
+                return (data + "\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+            }
+            return data + "\r\n";
+        }
+
+        private string Block(string data)
+        {
+            if (data == null || data == "")
+            {
+                return "";
+            }
+            return data + "\r\n";
+        }
+
+        private string PrepareDay(string day)
+        {
+            if (day == null || day == "")
+            {
+                return "";
+            }
+            if (day == BirthDay)
+            {
+                return "Birthday " + day + ". ";
+            }
+            if (day == AnniversaryDay)
+            {
+                return "Anniversary " + day + ". ";
+            }
+            return "";
+        }
+
+        private string PrepareYear(string year)
+        {
+            if (year == null || year == "")
+            {
+                return "";
+            }
+            return year + " (" + (2021 - Convert.ToInt32(year)) + ")" + "\r\n";
+        }
+
 
         private string ForSpaces(string initials)
         {

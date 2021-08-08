@@ -41,7 +41,9 @@ namespace addressbook_web_tests
         {
             manager.Navigator.OpenHomePage();
             manager.Navigator.GoToContactDetailsPage(0);
-            string allData = driver.FindElement(By.Id("content")).GetAttribute("innerText").Replace("\r\n\r\n", "\r\n").Replace("H: ", "").Replace("M: ", "").Replace("W: ", "").Replace("F: ", "").Replace("Birthday ", "").Replace("Anniversary ", "").Replace("Homepage:\r\n", "").Replace("P: ", "").Trim();
+            string allData = driver.FindElement(By.Id("content")).GetAttribute("innerText");
+            
+            //Replace("\r\n\r\n", "\r\n").Replace("H: ", "").Replace("M: ", "").Replace("W: ", "").Replace("F: ", "").Replace("Birthday ", "").Replace("Anniversary ", "").Replace("Homepage:\r\n", "").Replace("P: ", "").Trim();//
 
             //IList<IWebElement> data = driver.FindElement(By.Id("content")).FindElements(By.TagName("br"));
 
