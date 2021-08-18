@@ -13,20 +13,22 @@ namespace addressbook_web_tests
         [Test]
         public void ContactModificationTest()
         {
-            List<ContactData> oldContacts = app.Contact.GetContactList();
+            List<ContactData> oldContacts = ContactData.GetAll();
 
             ContactData newData = new ContactData("Test1", "User1");
             newData.BirthDay = "-";
             newData.AnniversaryDay = "-";
+            newData.BirthMonth = "-";
+            newData.AnniversaryMonth = "-";
 
-            ContactData oldData = oldContacts[0];
+            ContactData toBeModified = oldContacts[0];
 
             app.Contact.IsEmptyCheck();
-            app.Contact.Modify(1, newData);
+            app.Contact.Modify(toBeModified, newData);
 
             Assert.AreEqual(oldContacts.Count, app.Contact.GetContactCount());
 
-            List<ContactData> newContacts = app.Contact.GetContactList();
+            List<ContactData> newContacts = ContactData.GetAll();
             oldContacts[0].FirstName = newData.FirstName;
             oldContacts[0].LastName = newData.LastName;
             oldContacts.Sort();
@@ -35,7 +37,7 @@ namespace addressbook_web_tests
 
             foreach (ContactData contact in newContacts)
             {
-                if (contact.Id == oldData.Id)
+                if (contact.Id == toBeModified.Id)
                 {
                     Assert.AreEqual(newData.FirstName, contact.FirstName);
                     Assert.AreEqual(newData.LastName, contact.LastName);

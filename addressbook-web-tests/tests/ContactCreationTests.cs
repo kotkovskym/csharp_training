@@ -95,13 +95,13 @@ namespace addressbook_web_tests
         [Test, TestCaseSource("ContactDataFromJsonFile")]
         public void ContactCreationTest(ContactData contact)
         {
-            List<ContactData> oldContacts = app.Contact.GetContactList();
+            List<ContactData> oldContacts = ContactData.GetAll();
 
             app.Contact.Create(contact);
 
             Assert.AreEqual(oldContacts.Count + 1, app.Contact.GetContactCount());
 
-            List<ContactData> newContacts = app.Contact.GetContactList();
+            List<ContactData> newContacts = ContactData.GetAll();
             oldContacts.Add(contact);
             oldContacts.Sort();
             newContacts.Sort();

@@ -214,15 +214,38 @@ namespace addressbook_web_tests
             return this;
         }
 
+        public ContactHelper Modify(ContactData toBeModified, ContactData newData)
+        {
+            manager.Navigator.OpenHomePage();
+
+            InitContactModification(toBeModified.Id);
+            FillContactForm(newData, true);
+            SubmitContactModification();
+            manager.Navigator.ReturnToHomePage();
+            return this;
+        }
+
         public ContactHelper AddToGroup(int contact, int group, bool all)
         {
             manager.Navigator.OpenHomePage();
 
             SelectContact(contact, all);
-            SelectGroup(group);
+            SelectGroupToAdd(group);
             SubmitContactToGroupAddition();
             manager.Navigator.GoToGroupPage();
             return this;
+        }
+
+        public void AddContactToGroup(ContactData contact, GroupData group)
+        {
+            manager.Navigator.OpenHomePage();
+            ClearGroupFilter();
+            SelectContactById(contact.Id);
+            SelectGroupToAddByName(group.Name);
+            SubmitContactToGroupAddition();
+            new WebDriverWait(driver, TimeSpan.FromSeconds(10))
+                .Until(d => d.FindElements(By.CssSelector("div.msgbox")).Count() > 0);
+
         }
 
         public ContactHelper RemoveContact(int contact, bool all)
@@ -230,6 +253,17 @@ namespace addressbook_web_tests
             manager.Navigator.OpenHomePage();
 
             SelectContact(contact, all);
+            InitContactDeletion();
+            SubmitContactDeletion();
+            manager.Navigator.OpenHomePage();
+            return this;
+        }
+
+        public ContactHelper RemoveContact(ContactData contact, bool all)
+        {
+            manager.Navigator.OpenHomePage();
+
+            SelectContactById(contact.Id);
             InitContactDeletion();
             SubmitContactDeletion();
             manager.Navigator.OpenHomePage();
@@ -261,81 +295,43 @@ namespace addressbook_web_tests
 
         public ContactHelper FillContactForm(ContactData contact, bool IsContactModify)
         {
-            driver.FindElement(By.Name("firstname")).Click();
-            driver.FindElement(By.Name("firstname")).Clear();
-            driver.FindElement(By.Name("firstname")).SendKeys(contact.FirstName);
-            driver.FindElement(By.Name("middlename")).Click();
-            driver.FindElement(By.Name("middlename")).Clear();
-            driver.FindElement(By.Name("middlename")).SendKeys(contact.MiddleName);
-            driver.FindElement(By.Name("lastname")).Click();
-            driver.FindElement(By.Name("lastname")).Clear();
-            driver.FindElement(By.Name("lastname")).SendKeys(contact.LastName);
-            driver.FindElement(By.Name("nickname")).Click();
-            driver.FindElement(By.Name("nickname")).Clear();
-            driver.FindElement(By.Name("nickname")).SendKeys(contact.Nickname);
-            driver.FindElement(By.Name("title")).Click();
-            driver.FindElement(By.Name("title")).Clear();
-            driver.FindElement(By.Name("title")).SendKeys(contact.Title);
-            driver.FindElement(By.Name("company")).Click();
-            driver.FindElement(By.Name("company")).Clear();
-            driver.FindElement(By.Name("company")).SendKeys(contact.Company);
-            driver.FindElement(By.Name("address")).Click();
-            driver.FindElement(By.Name("address")).Clear();
-            driver.FindElement(By.Name("address")).SendKeys(contact.Address);
-            driver.FindElement(By.Name("home")).Click();
-            driver.FindElement(By.Name("home")).Clear();
-            driver.FindElement(By.Name("home")).SendKeys(contact.HomeTelephone);
-            driver.FindElement(By.Name("mobile")).Click();
-            driver.FindElement(By.Name("mobile")).Clear();
-            driver.FindElement(By.Name("mobile")).SendKeys(contact.Mobile);
-            driver.FindElement(By.Name("work")).Click();
-            driver.FindElement(By.Name("work")).Clear();
-            driver.FindElement(By.Name("work")).SendKeys(contact.WorkTelephone);
-            driver.FindElement(By.Name("fax")).Click();
-            driver.FindElement(By.Name("fax")).Clear();
-            driver.FindElement(By.Name("fax")).SendKeys(contact.Fax);
-            driver.FindElement(By.Name("email")).Click();
-            driver.FindElement(By.Name("email")).Clear();
-            driver.FindElement(By.Name("email")).SendKeys(contact.Email);
-            driver.FindElement(By.Name("email2")).Click();
-            driver.FindElement(By.Name("email2")).Clear();
-            driver.FindElement(By.Name("email2")).SendKeys(contact.Email2);
-            driver.FindElement(By.Name("email3")).Click();
-            driver.FindElement(By.Name("email3")).Clear();
-            driver.FindElement(By.Name("email3")).SendKeys(contact.Email3);
-            driver.FindElement(By.Name("homepage")).Click();
-            driver.FindElement(By.Name("homepage")).Clear();
-            driver.FindElement(By.Name("homepage")).SendKeys(contact.HomePage);
+            Type(By.Name("firstname"), contact.FirstName);
+            Type(By.Name("middlename"), contact.MiddleName);
+            Type(By.Name("lastname"), contact.LastName);
+            Type(By.Name("nickname"), contact.Nickname);
+            Type(By.Name("title"), contact.Title);
+            Type(By.Name("company"), contact.Company);
+            Type(By.Name("address"), contact.Address);
+            Type(By.Name("home"), contact.HomeTelephone);
+            Type(By.Name("mobile"), contact.Mobile);
+            Type(By.Name("work"), contact.WorkTelephone);
+            Type(By.Name("fax"), contact.Fax);
+            Type(By.Name("email"), contact.Email);
+            Type(By.Name("email2"), contact.Email2);
+            Type(By.Name("email3"), contact.Email3);
+            Type(By.Name("homepage"), contact.HomePage);
+            Type(By.Name("byear"), contact.BirthYear);
+            Type(By.Name("ayear"), contact.AnniversaryYear);
+            Type(By.Name("address2"), contact.Address2);
+            Type(By.Name("phone2"), contact.HomeTelephone2);
+            Type(By.Name("notes"), contact.Notes);
+
             driver.FindElement(By.Name("bday")).Click();
             new SelectElement(driver.FindElement(By.Name("bday"))).SelectByText(contact.BirthDay);
             driver.FindElement(By.Name("bmonth")).Click();
             new SelectElement(driver.FindElement(By.Name("bmonth"))).SelectByText(contact.BirthMonth);
-            driver.FindElement(By.Name("byear")).Click();
-            driver.FindElement(By.Name("byear")).Clear();
-            driver.FindElement(By.Name("byear")).SendKeys(contact.BirthYear);
+
             driver.FindElement(By.Name("aday")).Click();
             new SelectElement(driver.FindElement(By.Name("aday"))).SelectByText(contact.AnniversaryDay);
             driver.FindElement(By.Name("amonth")).Click();
             new SelectElement(driver.FindElement(By.Name("amonth"))).SelectByText(contact.AnniversaryMonth);
-            driver.FindElement(By.Name("ayear")).Click();
-            driver.FindElement(By.Name("ayear")).Clear();
-            driver.FindElement(By.Name("ayear")).SendKeys(contact.AnniversaryYear);
+
             if (!IsContactModify)
             {
                 driver.FindElement(By.Name("new_group")).Click();
                 new SelectElement(driver.FindElement(By.Name("new_group"))).SelectByText(contact.Group);
                 driver.FindElement(By.Name("new_group")).Click();
             }
-
-            driver.FindElement(By.Name("address2")).Click();
-            driver.FindElement(By.Name("address2")).Clear();
-            driver.FindElement(By.Name("address2")).SendKeys(contact.Address2);
-            driver.FindElement(By.Name("phone2")).Click();
-            driver.FindElement(By.Name("phone2")).Clear();
-            driver.FindElement(By.Name("phone2")).SendKeys(contact.HomeTelephone2);
-            driver.FindElement(By.Name("notes")).Click();
-            driver.FindElement(By.Name("notes")).Clear();
-            driver.FindElement(By.Name("notes")).SendKeys(contact.Notes);
 
             //driver.FindElement(By.XPath("//input[@type='file']")).SendKeys(contact.Photo);
             //driver.FindElement(By.Name("photo")).Click();
@@ -357,11 +353,30 @@ namespace addressbook_web_tests
                 .FindElement(By.TagName("a")).Click();
             return this;
         }
+
+        public ContactHelper InitContactModification(string id)
+        {
+            driver.FindElement(By.XPath("//a[@href='edit.php?id="+id+"']")).Click();
+
+            /*driver.FindElement(By.XPath("(//input[@name='selected[]' and @value ='" + id + "'])"))
+                .FindElements(By.TagName("td"))[7]
+                .FindElement(By.TagName("a")).Click();*/
+            return this;
+        }
         public ContactHelper SubmitContactModification()
         {
             driver.FindElement(By.Name("update")).Click();
             contactCache = null;
             return this;
+        }
+
+        public void ClearGroupFilter()
+        {
+            new SelectElement(driver.FindElement(By.Name("group"))).SelectByText("[all]");
+        }
+        public void SelectContactById(string contactId)
+        {
+            driver.FindElement(By.Id(contactId)).Click();
         }
 
         public ContactHelper SelectContact(int contact, bool all)
@@ -379,7 +394,7 @@ namespace addressbook_web_tests
 
             return this;
         }
-        public ContactHelper SelectGroup(int group)
+        public ContactHelper SelectGroupToAdd(int group)
         {
             driver.FindElement(By.Name("to_group")).Click();
             new SelectElement(driver.FindElement(By.Name("to_group"))).SelectByIndex(group);
@@ -387,6 +402,12 @@ namespace addressbook_web_tests
             selectedGroupName = driver.FindElement(By.XPath("//div[@id='content']/form[2]/div[4]/select/option["+group+"]")).Text;
             return this;
         }
+
+        public void SelectGroupToAddByName(string groupName)
+        {
+            new SelectElement(driver.FindElement(By.Name("to_group"))).SelectByText(groupName);
+        }
+
 
         public ContactHelper SubmitContactToGroupAddition()
         {

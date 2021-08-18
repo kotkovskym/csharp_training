@@ -15,7 +15,7 @@ namespace addressbook_web_tests
 
 {
     [TestFixture]
-    public class GroupCreationTests : AuthTestBase
+    public class GroupCreationTests : GroupTestBase
     {
         public static IEnumerable<GroupData> RandomGroupDataProvider()
         {
@@ -91,13 +91,13 @@ namespace addressbook_web_tests
         [Test, TestCaseSource("GroupDataFromXmlFile")]
         public void GroupCreationTest(GroupData group)
         {
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = GroupData.GetAll(); 
 
             app.Groups.Create(group);
 
             Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupCount());
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            List<GroupData> newGroups = GroupData.GetAll();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
@@ -132,12 +132,19 @@ namespace addressbook_web_tests
             DateTime end = DateTime.Now;
             System.Console.Out.WriteLine(end.Subtract(start));
 
-            DateTime start1 = DateTime.Now;
-            AddressBookDB db = new AddressBookDB();
-            List<GroupData> fromDb = (from g in db.Groups select g).ToList();
-            db.Close();
-            DateTime end1 = DateTime.Now;
-            System.Console.Out.WriteLine(end1.Subtract(start1));
+            start = DateTime.Now;
+            List<GroupData> fromDb = GroupData.GetAll();
+            end = DateTime.Now;
+            System.Console.Out.WriteLine(end.Subtract(start));
+        }
+
+        [Test]
+        public void TestForTest()
+        {
+            foreach( ContactData contact in GroupData.GetAll()[0].GetContacts())
+            {
+                System.Console.Out.WriteLine(contact);
+            }
         }
 
     }
