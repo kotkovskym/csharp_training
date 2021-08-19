@@ -270,6 +270,16 @@ namespace addressbook_web_tests
             return this;
         }
 
+        public void RemoveContactFromGroup(ContactData contact, GroupData group)
+        {
+            manager.Navigator.OpenHomePage();
+
+            SelectGroupFilter(group.Name);
+            SelectContactById(contact.Id);
+            SubmitContactRemoval();
+            
+        }
+
         public ContactHelper IsEmptyCheck()
         {
             manager.Navigator.OpenHomePage();
@@ -408,11 +418,21 @@ namespace addressbook_web_tests
             new SelectElement(driver.FindElement(By.Name("to_group"))).SelectByText(groupName);
         }
 
+        public void SelectGroupFilter(string name)
+        {
+            new SelectElement(driver.FindElement(By.Name("group"))).SelectByText(name);
+        }
+
 
         public ContactHelper SubmitContactToGroupAddition()
         {
             driver.FindElement(By.Name("add")).Click();
             return this;
+        }
+
+        public void SubmitContactRemoval()
+        {
+            driver.FindElement(By.Name("remove")).Click();
         }
 
         public ContactHelper InitContactDeletion()
