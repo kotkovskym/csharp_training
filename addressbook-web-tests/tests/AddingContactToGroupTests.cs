@@ -12,9 +12,16 @@ namespace addressbook_web_tests
         [Test]
         public void TestAddingContactToGroup()
         {
+            //checks
+            app.Groups.IsEmptyCheck();
+            app.Contact.IsEmptyCheck();
+
+            //data preparation
             GroupData group = GroupData.GetAll()[0];
             List<ContactData> oldList = group.GetContacts();
             ContactData contact = ContactData.GetAll().Except(oldList).First();
+            app.Contact.IsEmptyCheck(contact);
+
 
             //actions
             app.Contact.AddContactToGroup(contact, group);

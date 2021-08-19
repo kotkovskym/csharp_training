@@ -294,6 +294,27 @@ namespace addressbook_web_tests
             }
             return this;
         }
+
+        public ContactHelper IsEmptyCheck(ContactData contact)
+        {
+            if (contact == null)
+            {
+                ContactData fortest = new ContactData("test", "user");
+                Create(fortest);
+            }
+            return this;
+        }
+
+        public ContactHelper IsRemovable(ContactData contact, GroupData group)
+        {
+            if (contact == null)
+            {
+                ContactData fortest = new ContactData("test", "user");
+                Create(fortest);
+                AddContactToGroup(fortest, group);
+            }
+            return this;
+        }
         #endregion
 
         #region Low level methods
