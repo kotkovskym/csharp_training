@@ -8,21 +8,21 @@ using System.Collections.Generic;
 namespace addressbook_web_tests
 {
     [TestFixture]
-    public class GroupRemovalTests : AuthTestBase
+    public class GroupRemovalTests : GroupTestBase
     {
         [Test]
         public void GroupRemovalTest()
         {
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = GroupData.GetAll();
+            GroupData toBeRemoved = oldGroups[0];
 
             app.Groups.IsEmptyCheck();
-            app.Groups.Remove(1);
+            app.Groups.Remove(toBeRemoved);
 
             Assert.AreEqual(oldGroups.Count - 1, app.Groups.GetGroupCount());
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            List<GroupData> newGroups = GroupData.GetAll();
 
-            GroupData toBeRemoved = oldGroups[0];
             oldGroups.RemoveAt(0);
 
             Assert.AreEqual(oldGroups, newGroups);

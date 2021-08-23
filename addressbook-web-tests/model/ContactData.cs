@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LinqToDB.Mapping;
 
 
 namespace addressbook_web_tests
 {
+    [Table(Name = "addressbook")]
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
         /*private string middlename = "";
@@ -34,6 +36,7 @@ namespace addressbook_web_tests
         private string notes = "";
         private string photo = "";*/
         private string allPhones;
+        private string allEmails;
         private string allData;
         private string initials;
 
@@ -41,6 +44,10 @@ namespace addressbook_web_tests
         {
             FirstName = firstname;
             LastName = lastname;
+        }
+
+        public ContactData()
+        {
         }
 
         public bool Equals(ContactData other)
@@ -82,59 +89,89 @@ namespace addressbook_web_tests
 
             return LastName.CompareTo(other.LastName);
         }
+
+        [Column(Name = "firstname")]
         public string FirstName { get; set; }
 
+        [Column(Name = "lastname")]
         public string LastName { get; set; }
 
+        [Column(Name = "id"), PrimaryKey]
         public string Id { get; set; }
+
+        [Column(Name = "middlename")]
         public string MiddleName { get; set; }
 
+        [Column(Name = "nickname")]
         public string Nickname { get; set; }
 
+        [Column(Name = "title")]
         public string Title { get; set; }
 
+        [Column(Name = "company")]
         public string Company { get; set; }
 
+        [Column(Name = "address")]
         public string Address { get; set; }
 
+        [Column(Name = "home")]
         public string HomeTelephone { get; set; }
 
+        [Column(Name = "mobile")]
         public string Mobile { get; set; }
 
+        [Column(Name = "work")]
         public string WorkTelephone { get; set; }
 
+        [Column(Name = "fax")]
         public string Fax { get; set; }
 
+        [Column(Name = "email")]
         public string Email { get; set; }
 
-
+        [Column(Name = "email2")]
         public string Email2 { get; set; }
 
+        [Column(Name = "email3")]
         public string Email3 { get; set; }
 
+        [Column(Name = "homepage")]
         public string HomePage { get; set; }
 
+        [Column(Name = "bday")]
         public string BirthDay { get; set; }
 
+        [Column(Name = "bmonth")]
         public string BirthMonth { get; set; }
 
+        [Column(Name = "byear")]
         public string BirthYear { get; set; }
 
+        [Column(Name = "aday")]
         public string AnniversaryDay { get; set; }
 
+        [Column(Name = "amonth")]
         public string AnniversaryMonth { get; set; }
 
+        [Column(Name = "ayear")]
         public string AnniversaryYear { get; set; }
 
         public string Group { get; set; }
 
+        [Column(Name = "address2")]
         public string Address2 { get; set; }
 
+        [Column(Name = "notes")]
         public string Notes { get; set; }
 
+        [Column(Name = "phone2")]
         public string HomeTelephone2 { get; set; }
 
+        [Column(Name = "photo")]
         public string Photo { get; set; }
+
+        [Column (Name = "deprecated")]
+        public string Deprecated { get; set; }
 
         public string AllPhones
         {
@@ -146,10 +183,26 @@ namespace addressbook_web_tests
                 }
                 else
                 {
-                    return (CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone)).Trim();
+                    return (CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone) + CleanUp(HomeTelephone2)).Trim();
                 }
             }
             set { allPhones = value; }
+        }
+
+        public string AllEmails
+        {
+            get
+            {
+                if (allEmails != null)
+                {
+                    return allEmails;
+                }
+                else
+                {
+                    return (CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)).Trim();
+                }
+            }
+            set { allEmails = value; }
         }
 
         public string AllData
@@ -162,8 +215,7 @@ namespace addressbook_web_tests
                 }
                 else
                 {
-                    return (ForSpaces(FirstName) + ForSpaces(MiddleName) + CleanUp(LastName) + CleanUp(Nickname) + CleanUp(Title) + CleanUp(Company) + CleanUp(Address) +
-                        CleanUp(HomeTelephone) + CleanUp(Mobile) + CleanUp(WorkTelephone) +  CleanUp(Fax) + CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3) + CleanUp(HomePage) + (BirthDay) + ". " + ForSpaces(BirthMonth) + ForSpaces(BirthYear) + "(" + (2021 - Convert.ToInt32(BirthYear)) + ")" + "\r\n" +(AnniversaryDay) + ". " + ForSpaces(AnniversaryMonth) + ForSpaces(AnniversaryYear) + "(" + (2021 - Convert.ToInt32(AnniversaryYear)) + ")" + "\r\n" + CleanUp(Address2) + CleanUp(HomeTelephone2) + CleanUp(Notes)).Trim();
+                    return ForSpaces(FirstName) + ForSpaces(MiddleName) + CleanUp(LastName) + CleanUp(Nickname) + Block(CleanUp(Title) + CleanUp(Company) + CleanUp(Address)) + Block(PreparePhone(CleanUpPhone(HomeTelephone)) + PreparePhone(CleanUpPhone(Mobile)) + PreparePhone(CleanUpPhone(WorkTelephone)) + PreparePhone(CleanUpPhone(Fax))) + Block(CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)) + CleanUp(HomePage) + Block(PrepareDay(BirthDay) + ForSpaces(BirthMonth) + PrepareYear(BirthYear) + PrepareDay(AnniversaryDay) + ForSpaces(AnniversaryMonth) + PrepareYear(AnniversaryYear)) + Block(CleanUp(Address2)) + Block(PreparePhone(CleanUpPhone(HomeTelephone2))) + CleanUp(Notes);
                 }
             }
             set { allData = value; }
@@ -185,7 +237,7 @@ namespace addressbook_web_tests
             set { initials = value; }
         }
 
-        private string CleanUp(string phone)
+        private string CleanUpPhone(string phone)
         {
             if (phone == null || phone == "")
             {
@@ -194,6 +246,85 @@ namespace addressbook_web_tests
             return Regex.Replace(phone, "[ -()]", "") + "\r\n";
         }
 
+        private string PreparePhone(string phone)
+        {
+            if (phone == CleanUpPhone(Mobile))
+            {
+                return "M: " + phone;
+            }
+            else if(phone == CleanUpPhone(HomeTelephone))
+            {
+                return "H: " + phone;
+            }
+            else if(phone == CleanUpPhone(Fax))
+            {
+                return "F: " + phone;
+            }
+             else if (phone == CleanUpPhone(WorkTelephone))
+            {
+                return "W: " + phone;
+            }
+            else if (phone == CleanUpPhone(HomeTelephone2))
+            {
+                return "P: " + phone;
+            }
+            return "";
+            
+        }
+
+        private string CleanUp(string data)
+        {
+            if (data == null || data == "")
+            {
+                return "";
+            }
+            if (data == HomePage)
+            {
+                return "Homepage:" + "\r\n" + data + "\r\n\r\n";
+            }
+            if (data == Notes)
+            {
+                return (data + "\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+            }
+            return data + "\r\n";
+        }
+
+        private string Block(string data)
+        {
+            if (data == null || data == "")
+            {
+                return "";
+            }
+            return data + "\r\n";
+        }
+
+        private string PrepareDay(string day)
+        {
+            if (day == null || day == "")
+            {
+                return "";
+            }
+            if (day == BirthDay)
+            {
+                return "Birthday " + day + ". ";
+            }
+            if (day == AnniversaryDay)
+            {
+                return "Anniversary " + day + ". ";
+            }
+            return "";
+        }
+
+        private string PrepareYear(string year)
+        {
+            if (year == null || year == "")
+            {
+                return "";
+            }
+            return year + " (" + (2021 - Convert.ToInt32(year)) + ")" + "\r\n";
+        }
+
+
         private string ForSpaces(string initials)
         {
             if (initials == null || initials == "")
@@ -201,6 +332,14 @@ namespace addressbook_web_tests
                 return "";
             }
             return initials + " ";
+        }
+
+        public static List<ContactData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from c in db.Contacts.Where(x => x.Deprecated == "0000-00-00 00:00:00") select c).ToList();
+            }
         }
     }
 }
