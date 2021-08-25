@@ -5,24 +5,21 @@ using System.Collections.Generic;
 namespace addressbook_tests_white
 {
     [TestFixture]
-    public class GroupCreationTests : TestBase
+    public class GroupRemovalTests : TestBase
     {
         [Test]
-        public void TestGroupCreation()
+        public void GroupRemovalTest()
         {
             List<GroupData> oldGroups = app.Groups.GetGroupList();
+            GroupData toBeRemoved = oldGroups[0];
 
-            GroupData newGroup = new GroupData()
-            {
-                Name = "Test"
-            };
+            app.Groups.Remove(toBeRemoved);
 
-            app.Groups.AddGroup(newGroup);
+            Assert.AreEqual(oldGroups.Count - 1, app.Groups.GetGroupCount());
 
             List<GroupData> newGroups = app.Groups.GetGroupList();
-            oldGroups.Add(newGroup);
-            oldGroups.Sort();
-            newGroups.Sort();
+
+            oldGroups.RemoveAt(0);
 
             Assert.AreEqual(oldGroups, newGroups);
         }
