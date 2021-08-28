@@ -13,6 +13,7 @@ namespace addressbook_tests_white
             List<GroupData> oldGroups = app.Groups.GetGroupList();
             GroupData toBeRemoved = oldGroups[0];
 
+            app.Groups.IsEmptyCheck();
             app.Groups.Remove(toBeRemoved);
 
             Assert.AreEqual(oldGroups.Count - 1, app.Groups.GetGroupCount());

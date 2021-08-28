@@ -94,5 +94,18 @@ namespace addressbook_tests_white
 
             CloseGroupsDialogue(dialogue);
         }
+
+        public GroupHelper IsEmptyCheck()
+        {
+            int count = GetGroupCount();
+
+            if (count == 0)
+            {
+                GroupData fortest = new GroupData();
+                fortest.Name = "test";
+                AddGroup(fortest);
+            }
+            return this;
+        }
     }
 }
